@@ -7,11 +7,9 @@ PImage bground;
 
 
 public void setup(){
-  screen = 0;
-  bground = loadImage("bground.jpg");
-  image(bground,0,0);
-  size(878,493);
-  int[] a = new int[3];
+  screen = 1;
+  //bground = loadImage("bground.jpg");
+  //image(bground,0,0);
   L = randPiece();
   B1 = new Board(150,400,10,30);
 }
@@ -56,8 +54,15 @@ void keyPressed(){
 }
 void collision(){
   for(Point point : B1.blocks){
+     int top = point.getY()*-15 + B1.getOrigin()[1];
+     int left = point.getX()*15 + B1.getOrigin()[0];
      for(int i =0; i<4;i++){
-       
+       int blockLeft = L.getOrigin()[0] + L.blocks[i].getX()*15;
+       int blockBottom = L.getOrigin()[1] + L.blocks[i].getY()*-15;
+       if(left == blockLeft && (blockBottom>top&&blockBottom-15<top)){
+         B1.add(L);
+         L = randPiece();
+       }
      }
   }
   

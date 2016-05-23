@@ -3,7 +3,6 @@ public class Board implements Displayable{
   private int Width;
   private int Height;
   ArrayList<Point> blocks;
-  private int[] heights;
   public int[] getOrigin(){
      return origin; 
    }
@@ -31,7 +30,6 @@ public class Board implements Displayable{
     Width = wid;
     Height = hgt;
     blocks = new ArrayList<Point>();
-    heights = new int[10];
     
   }
   public void add(Piece L){
