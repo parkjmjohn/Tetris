@@ -2,12 +2,8 @@ public class Point{
   private int[] Color;
   private int xpos;
   private int ypos;
-  public int[] getColor(){
-      int[] col = new int[3];
-      for (int i = 0;i<3;i++){
-        col[i] = Color[i];
-      }
-      return col;
+  public int getColor(int index){
+      return Color[index];
    }
   public int getX(){
     return xpos; 
@@ -29,12 +25,13 @@ public class Point{
   public Point(int X,int Y,int[] Colors){
     xpos = X;
     ypos = Y;
-    int count = 2;
+    int count = 0;
     Color = new int[3];
-    while(count >= 0){
+    while(count < 3){
       Color[count] = Colors[count];
-      count--;
+      print(Colors[count] + " ");
+      count++;
     }
-    print(Color[0]+" "+Color[1]+" "+Color[2]);
+    //print(Color[0]+" "+Color[1]+" "+Color[2]);
   }
 }

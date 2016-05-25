@@ -66,6 +66,11 @@ public class Piece implements Displayable{
      origin[0]-=val; 
      changeReach();
    }
+   public void moveUp(int val){
+     origin[1]-=val;
+     changeReach();
+   }
+   
    public void gravitize(){
      setOrigin(origin[0],origin[1]+1);
      changeReach();
@@ -77,8 +82,10 @@ public class Piece implements Displayable{
      for(Point point : blocks){
         int[] col = new int[3];
         for (int i = 0;i<3;i++){
-          col[i] = point.getColor()[i];
+          col[i] = point.getColor(i);
+          
         }
+        //print(col[0]+ " " + col[1] + " " + col[2]+ " ");
         fill(col[0],col[1],col[2]);
         int bottom = origin[1] + point.getY()*-15;
         int left = origin[0] + point.getX()*15;
