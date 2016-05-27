@@ -125,6 +125,24 @@ void keepInBounds(Piece piece){
   }
 }
 
+void drop(){
+  while(!(collision()||hitBottom())){
+    //Move down until hits another piece or bottom of board
+    L.gravitize();
+  }
+  B1.add(L);
+  
+  //Remove full rows
+  checkRows();
+  
+  //Initialize new piece
+  L = randPiece();
+}
+boolean hitBottom(){
+  //Check if piece hits bottom of board
+  return L.bottomReach+14>=B1.getOrigin()[1];
+}
+
 //Randomly creates a piece
 Piece randPiece(){
   int rand = (int)(Math.random()*7);
