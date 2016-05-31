@@ -1,8 +1,8 @@
 import ddf.minim.*;
 
 //MUSIC
-Minim minimbgroundmusic, minimclearline, minimgameover, minimrotate, minimscore, minimselect, minimhowtoplay, minimcreds;
-AudioPlayer bgroundmusic, clearline, gameover, rotate, score, select, howtoplay, creds;
+Minim minimbgroundmusic, minimclearline, minimgameover, minimrotate, minimscore, minimselect, minimhowtoplay, minimcreds, minimdrop;
+AudioPlayer bgroundmusic, clearline, gameover, rotate, score, select, howtoplay, creds, drop;
 
 //PIMAGES
 PImage bground;
@@ -10,7 +10,7 @@ Point[] N;
 Point b,c,d,e;
 Piece L, W;
 Board B1;
-int screen, scorecounter, lineclear, howmany, level;
+int screen, scorecounter, lineclear, howmany, level, show;
 
 //Font
 PFont font;
@@ -29,6 +29,7 @@ public void setup(){
   minimselect = new Minim(this);
   minimhowtoplay = new Minim(this);
   minimcreds = new Minim(this);
+  minimdrop = new Minim(this);
   clearline = minimclearline.loadFile("clearline.mp3");
   gameover = minimgameover.loadFile("gameover.mp3");
   rotate = minimrotate.loadFile("rotate.mp3");
@@ -36,6 +37,7 @@ public void setup(){
   select = minimselect.loadFile("select.mp3");
   howtoplay = minimhowtoplay.loadFile("howtoplay.mp3");
   creds = minimcreds.loadFile("creds.mp3");
+  drop = minimdrop.loadFile("drop.mp3");
   font = loadFont("GillSansMT-Italic-48.vlw");
   textFont(font,48);
   L = randPiece();
@@ -47,9 +49,10 @@ void draw(){
     menu();
   }else if(screen == 1){
     play();
-    fill(200);
-    text(scorecounter, 10, 50);
-    text(level+1, 10, 100);  
+    fill(#18E7F0);
+    int show = level+1;
+    text("Score: " + scorecounter, 10, 50);
+    text("Level: " + show, 10, 100);  
   }
 }
 
@@ -131,8 +134,8 @@ void keyPressed(){
     L.moveRight(); 
   }else if(key == 's'){
     drop(); 
-    rotate.play();
-    rotate.rewind();
+    drop.play();
+    drop.rewind();
   }
   keepInBounds(L);
 }
