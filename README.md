@@ -9,12 +9,15 @@ Project Name: Tetris Friends
 
 Description: The eminent Tetris game. Play at extreme levels (if your mind has the celerity) or play a zooming speed (if your hands can handle the cramps). Compete against your friend, in 1v1 Tetris, to see who gets to hook up with that chick.
 
+
+
 Project Outline: 
 Michael: Fix rotate, hold
 
 John: Pause, Save high score
 
 Gameover
+
 
 
 Development Log (Dates/Description) 
