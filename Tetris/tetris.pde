@@ -1,8 +1,8 @@
 import ddf.minim.*;
 
 //MUSIC
-Minim minimbgroundmusic, minimclearline, minimgameover, minimrotate, minimscore, minimselect, minimhowtoplay, minimcreds, minimdrop;
-AudioPlayer bgroundmusic, clearline, gameover, rotate, score, select, howtoplay, creds, drop;
+Minim minimbgroundmusic, minimclearline, minimgameover, minimrotate, minimscore, minimselect, minimhowtoplay, minimcreds;
+AudioPlayer bgroundmusic, clearline, gameover, rotate, score, select, howtoplay, creds;
 
 //PIMAGES
 PImage bground;
@@ -10,70 +10,26 @@ Point[] N;
 Point b,c,d,e;
 Piece L, W;
 Board B1;
-int screen, scorecounter, lineclear, howmany, level, show;
+int screen, scorecounter, lineclear, howmany, level;
 
 //Font
 PFont font;
 
-public void setup(){
-  size(878, 493);
-  screen = 0;
-  scorecounter = 0;
-  lineclear = 0;
-  howmany = 0;
-  level = 0;
-  show = level+1;
-  minimclearline = new Minim(this);
-  minimgameover = new Minim(this);
-  minimrotate = new Minim(this);
-  minimscore = new Minim(this);
-  minimselect = new Minim(this);
-  minimhowtoplay = new Minim(this);
-  minimcreds = new Minim(this);
-  minimdrop = new Minim(this);
-  clearline = minimclearline.loadFile("../clearline.mp3");
-  gameover = minimgameover.loadFile("../gameover.mp3");
-  rotate = minimrotate.loadFile("../rotate.mp3");
-  score = minimscore.loadFile("../score.mp3");
-  select = minimselect.loadFile("../select.mp3");
-  howtoplay = minimhowtoplay.loadFile("../howtoplay.mp3");
-  creds = minimcreds.loadFile("../creds.mp3");
-  drop = minimdrop.loadFile("../drop.mp3");
-  font = loadFont("GillSansMT-Italic-48.vlw");
-  textFont(font,48);
-  L = randPiece();
-  B1 = new Board(300,360,10,30);
-  menu();
+void draw(){
+  if(screen == 0){
+    menu();
+  }else if(screen == 1){
+    play();
+    fill(200);
+    text(scorecounter, 10, 50);
+    text(level+1, 10, 100);  
+  }
 }
 
-void draw(){
-  if(mousePressed && screen==0){
-    if(mouseX>387 && mouseX<483 && mouseY>278 && mouseY<338) {
-      screen=1;
-      play();
-      fill(#18E7F0);
-      text("Score: " + scorecounter, 10, 50);
-      text("Level: " + show, 10, 100);  
-    }
-  }
-  if(mousePressed && screen==0){
-    if(mouseX>256 && mouseX<361 && mouseY>353 && mouseY<447) {
-      screen=2;
-      fill(#18E7F0);
-    }
-  }
-  if(mousePressed && screen==0){
-    if(mouseX>517 && mouseX<625 && mouseY>353 && mouseY<447) {
-      screen=3;
-      fill(250);
-    }
-  }
-}
- 
 void menu(){
-  bground = loadImage("../bground.jpg");
-  //minimbgroundmusic = new Minim(this);
-  //bgroundmusic = minimbgroundmusic.loadFile("../bgroundmusic.mp3");
+  bground = loadImage("bground.jpg");
+  minimbgroundmusic = new Minim(this);
+  //bgroundmusic = minimbgroundmusic.loadFile("bgroundmusic.mp3");
   image(bground, 0, 0);  
   //bgroundmusic.play();
   //bgroundmusic.loop();
@@ -81,10 +37,10 @@ void menu(){
 
 void play(){
   //insert text
-  background(#F22020);
+  background(0);
   B1.display();
   L.display();
-  L.gravitize(level);
+  L.gravitize();
   if(L.bottomReach+10>=B1.getOrigin()[1]){
     B1.add(L);
     checkRows();
@@ -96,24 +52,24 @@ void play(){
     L = randPiece();
   }
 }
-
 void checkRows(){
-  for(int r = 0;r<B1.blocks.length;r++){    
+  for(int r = 0;r<B1.blocks.length;r++){
+    
     while(fullRow(r)){
       //print(r);
       removeRow(r);
     } 
   }
+  
 }
-
 void removeRow(int r){
   for(int row = r;row<B1.blocks.length-1;row++){
     for(int col = 0;col<B1.blocks[r].length;col++){
       if(B1.blocks[row+1][col]!=null){
-        float x = B1.blocks[row+1][col].getX();
-        float y = B1.blocks[row+1][col].getY();
-        int[] a = new int[3];
-        B1.blocks[row][col] = new Point(x,y-1,a);
+        int x = B1.blocks[row+1][col].getX();
+        int y = B1.blocks[row+1][col].getY();
+        int Color = B1.blocks[row+1][col].getColor();
+        B1.blocks[row][col] = new Point(x,y-1,Color);
       }else{
         B1.blocks[row][col] = null; 
       }
@@ -124,7 +80,6 @@ void removeRow(int r){
   lineclear+=1;
   refreshscore();
 }
-
 boolean fullRow(int r){
   print(B1.blocks.length + " " + B1.blocks[0].length);
   for(int c = 0;c<B1.blocks[0].length;c++){
@@ -135,26 +90,24 @@ boolean fullRow(int r){
   }
   return true;
 }
-
 void keyPressed(){
-  if(screen==1){
-    if(key == 'w'){
-      L.rotateLeft();
-      rotate.play();
-      rotate.rewind();
-    //}else if(key == 'f'){
-    //  L.rotateRight();
-    }else if(key == 'a'){
-      L.moveLeft(); 
-    }else if(key == 'd'){
-      L.moveRight(); 
-    }else if(key == 's'){
-      drop(); 
-      drop.play();
-      drop.rewind();
-    }
-    keepInBounds(L);
+  screen = 1;
+  if(key == 'w'){
+    L.rotateRight();
+    rotate.play();
+    rotate.rewind();
+  //}else if(key == 'f'){
+  //  L.rotateRight();
+  }else if(key == 'a'){
+    L.moveLeft(); 
+  }else if(key == 'd'){
+    L.moveRight(); 
+  }else if(key == 's'){
+    drop(); 
+    rotate.play();
+    rotate.rewind();
   }
+  keepInBounds(L);
 }
 
 boolean collision(){
@@ -197,15 +150,16 @@ void refreshscore(){
 void drop(){
   while(!(collision()||hitBottom())){
     //Move down until hits another piece or bottom of board
-    L.gravitize(level);
+    L.gravitize();
   }
-  B1.add(L);  
+  B1.add(L);
+  
   //Remove full rows
   checkRows();
+  
   //Initialize new piece
   L = randPiece();
 }
-
 boolean hitBottom(){
   //Check if piece hits bottom of board
   return L.bottomReach+14>=B1.getOrigin()[1];
@@ -236,10 +190,7 @@ Piece randPiece(){
 //Creates a square piece
 Piece createSquare(){
   //initiate color
-  int[] Color = new int[3];
-  Color[0] = 250;
-  Color[1] = 250;
-  Color[2] = 1;
+  int Color = color(250,250,1);
   Point[] blocks = new Point[4];
   Point P1 = new Point(0,0,Color);
   Point P2 = new Point(0,1,Color);
@@ -249,15 +200,11 @@ Piece createSquare(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks,225,200);
+  Piece N = new Piece(blocks,375,50);
   return N;
 }
-
 Piece createL(){
-  int[] Color = new int[3];
-  Color[0] = 51;
-  Color[1] = 112;
-  Color[2] = 240;
+  int Color = color(51,112,240);
   Point[] blocks = new Point[4];
   Point P1 = new Point(0,0,Color);
   Point P2 = new Point(1,0,Color);
@@ -267,15 +214,12 @@ Piece createL(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks, 225, 50);
+  Piece N = new Piece(blocks, 375, 50);
   return N;
 }
 
 Piece createbackwardsL(){
-  int[] Color = new int[3];
-  Color[0] = 1;
-  Color[1] = 250;
-  Color[2] = 1;
+  int Color = color(1,250,1);
   Point[] blocks = new Point[4];
   Point P1 = new Point(0,0,Color);
   Point P2 = new Point(1,0,Color);
@@ -285,15 +229,12 @@ Piece createbackwardsL(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks, 225, 50);
+  Piece N = new Piece(blocks, 375, 50);
   return N;
 }
 
 Piece createZ(){
-  int[] Color = new int[3];
-  Color[0] = 250;
-  Color[1] = 1;
-  Color[2] = 200;
+  int Color = color(250,1,200);
   Point[] blocks = new Point[4];
   Point P1 = new Point(0,2,Color);
   Point P2 = new Point(0,1,Color);
@@ -303,15 +244,12 @@ Piece createZ(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks, 225, 200);
+  Piece N = new Piece(blocks, 375, 50);
   return N;
 }
 
 Piece createbackwardZ(){
-  int[] Color = new int[3];
-  Color[0] = 100;
-  Color[1] = 250;
-  Color[2] = 213;
+  int Color = color(100,250,213);
   Point[] blocks = new Point[4];
   Point P1 = new Point(0,0,Color);
   Point P2 = new Point(0,1,Color);
@@ -321,15 +259,12 @@ Piece createbackwardZ(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks, 225, 200);
+  Piece N = new Piece(blocks, 375, 50);
   return N;
 }
 
 Piece createline(){
-  int[] Color = new int[3];
-  Color[0] = 184;
-  Color[1] = 62;
-  Color[2] = 203;
+  int Color = color(184,62,203);
   Point[] blocks = new Point[4];
   Point P1 = new Point(0,0,Color);
   Point P2 = new Point(0,1,Color);
@@ -339,15 +274,12 @@ Piece createline(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks, 225, 200);
+  Piece N = new Piece(blocks, 375, 50);
   return N;
 }
 
 Piece createT(){
-  int[] Color = new int[3];
-  Color[0] = 250;
-  Color[1] = 1;
-  Color[2] = 1;
+  int Color = color(250,1,1);
   Point[] blocks = new Point[4];
   Point P1 = new Point(0,0,Color);
   Point P2 = new Point(0,1,Color);
@@ -357,6 +289,6 @@ Piece createT(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks, 225, 200);
+  Piece N = new Piece(blocks, 375, 50);
   return N;
 }
