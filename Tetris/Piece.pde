@@ -80,13 +80,13 @@ public class Piece implements Displayable{
    }
    public void display(){
      for(Point point : blocks){
-        int[] col = new int[3];
-        for (int i = 0;i<3;i++){
-          col[i] = point.getColor(i);
+        //int[] col = new int[3];
+        //for (int i = 0;i<3;i++){
+        //  col[i] = point.getColor()[i];
           
-        }
+        //}
         //print(col[0]+ " " + col[1] + " " + col[2]+ " ");
-        fill(col[0],col[1],col[2]);
+        fill(point.getColor());
         int bottom = origin[1] + point.getY()*-15;
         int left = origin[0] + point.getX()*15;
         //print("" + bottom + " " + left + " ");
