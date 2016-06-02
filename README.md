@@ -16,7 +16,7 @@ Michael: Fix rotate, hold
 
 John: Pause, Save high score
 
-Gameover
+Left: Gameover and levels
 
 
 
