@@ -39,7 +39,7 @@ Development Log (Dates/Description)
 
 05/26 - Removed rows - Michael
 
-05/28 - Convert ints to floats - John
+05/28 - Convert ints to floats - Michael
 
 05/29 - Added score and line remove keeper, and score update function - John
 
