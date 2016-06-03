@@ -23,6 +23,7 @@ public void setup(){
   creds = minimcreds.loadFile("creds.mp3");
   font = loadFont("GillSansMT-Italic-48.vlw");
   textFont(font,48);
+  frameRate(50);
   L = randPiece();
   B1 = new Board(300,360,10,30);
 }

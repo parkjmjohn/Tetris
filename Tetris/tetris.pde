@@ -22,7 +22,13 @@ void draw(){
     play();
     fill(200);
     text(scorecounter, 10, 50);
-    text(level+1, 10, 100);  
+    text(level+1, 10, 100); 
+    if(level<=10){
+      int rate = 50 + level * 5;
+      frameRate(rate);
+    }else{
+      frameRate(110); 
+    }
   }
 }
 
@@ -99,9 +105,13 @@ void keyPressed(){
   //}else if(key == 'f'){
   //  L.rotateRight();
   }else if(key == 'a'){
-    L.moveLeft(); 
+    if(!collisionLeft()){
+      L.moveLeft(); 
+    }
   }else if(key == 'd'){
-    L.moveRight(); 
+    if(!collisionRight()){
+      L.moveRight(); 
+    }
   }else if(key == 's'){
     drop(); 
     drop.play();
@@ -128,6 +138,46 @@ boolean collision(){
     }
   }
   return false; 
+}
+boolean collisionLeft(){
+  int xpos = L.getOrigin()[0];
+  int ypos = L.getOrigin()[1];
+  for(Point point : L.blocks){
+    int x = point.getX()*15 + xpos;
+    int y = ypos - point.getY()*15;
+    x = Math.abs(x-B1.origin[0])/15;
+    y = Math.abs(y-B1.origin[1])/15;
+    if(y>=1){
+      if (x==0 || B1.blocks[y][x-1] != null||B1.blocks[y-1][x-1]!=null){
+        return true; 
+      }
+    }else{
+      if(x==9 || B1.blocks[y][x-1] != null){
+        return true; 
+      }
+    }
+  }
+  return false;
+}
+boolean collisionRight(){
+  int xpos = L.getOrigin()[0];
+  int ypos = L.getOrigin()[1];
+  for(Point point : L.blocks){
+    int x = point.getX()*15 + xpos;
+    int y = ypos - point.getY()*15;
+    x = Math.abs(x-B1.origin[0])/15;
+    y = Math.abs(y-B1.origin[1])/15;
+    if(y>=1){
+      if (x==9 || B1.blocks[y][x+1] != null||B1.blocks[y-1][x+1]!=null){
+        return true; 
+      }
+    }else{
+      if(x==9 || B1.blocks[y][x+1] != null){
+        return true; 
+      }
+    }
+  }
+  return false;
 }
 
 void keepInBounds(Piece piece){
