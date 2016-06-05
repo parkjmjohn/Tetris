@@ -14,6 +14,9 @@ int screen, scorecounter, lineclear, howmany, level, show, atatime;
 
 boolean squared;
 PFont font;
+int[] selection;
+
+//Selection sel = new Selection();
 
 public void setup(){
   size(878, 493);
@@ -22,6 +25,8 @@ public void setup(){
   lineclear = 0;
   howmany = 0;
   level = 0;
+  selection = new int[7];
+  //refreshselection();
   boolean squared = false;
   minimclearline = new Minim(this);
   minimgameover = new Minim(this);
@@ -61,19 +66,51 @@ void draw(){
   if(mousePressed && screen==0){
     if(mouseX>256 && mouseX<361 && mouseY>353 && mouseY<447) {
       screen=2;
+      image(bgroundplay, 0, 0);
       bgroundmusic.pause();
       howtoplay.play();
       howtoplay.loop();
+      fill(200);
+      textSize(72);
+      text("W    =    ROTATE", 10, 80);
+      text("S    =    DROP", 10, 160);
+      text("A    =    LEFT", 10, 240);
+      text("D    =    RIGHT", 10, 320);
+      text("P    =    PAUSE", 10, 400);
+      text("ANY KEY   =    UNPAUSE", 10, 480);
+      text("BACK", 700, 460);
     }
   }
   if(mousePressed && screen==0){
     if(mouseX>517 && mouseX<625 && mouseY>353 && mouseY<447) {
       screen=3;
+      image(bgroundplay, 0, 0);
+      fill(200);
+      textSize(48); 
+      text("Project Name: Tetris Friends", 10, 50);
+      text("Team Name: Steph & Klay", 10, 130);
+      text("GitHub: https://github.com/parkjmjohn/Tetris", 10, 210);
+      text("APCS-2 Konstantinovich", 10, 290);
+      text("Thankful for the music and pictures online", 10, 370);
+      text("BACK", 700, 460);
       bgroundmusic.pause();
       creds.play();
       creds.loop();
     }
   }
+  if(mousePressed && (screen==3 || screen == 2)){
+    if(mouseX>700 && mouseX<800 && mouseY>425 && mouseY<460) {
+      screen = 0;
+      howtoplay.pause();
+      creds.pause();
+      setup();
+    }
+  }
+  //if(mousePressed && screen==4){
+  //  if(mouseX>347 && mouseX<401 && mouseY>129 && mouseY<156) {
+  //    setup();
+  //  }
+  //}
   if(screen == 0){
     menu();
   }else if(screen == 1){
@@ -93,11 +130,12 @@ void menu(){
 
 void play(){
   //insert text
+  screen = 1;
   background(0);
   image(bgroundplay, 0, 0);
   B1.display();
   L.display();
-  if(key != 'p'||key == 'P'){
+  if(key != 'p'){
     L.gravitize();
     if(show%3==0){
       howtoplay.pause();
@@ -117,8 +155,10 @@ void play(){
   }
   else if (key=='p'){
     textSize(26); 
-    fill(#FA1717);
+    fill(#12A063);
     text("PAUSED", 334, 100);
+    //text("QUIT", 348, 150);
+    //screen = 4;
     bgroundmusic.pause();
     creds.pause();
     howtoplay.pause();
@@ -267,14 +307,30 @@ void drop(){
   L = randPiece();
 }
 
+
 boolean hitBottom(){
   //Check if piece hits bottom of board
   return L.bottomReach+14>=B1.getOrigin()[1];
 }
 
+//void refreshselection(){
+//    Integer[] arr = new Integer[7];
+//    for (int i = 0; i < arr.length; i++) {
+//        arr[i] = i;
+//    }
+//    Collections.shuffle(Arrays.asList(arr));
+//    System.out.println(Arrays.toString(arr));
+  
+//}
+
+//void removeselection(int value){
+//  if 
+//}
+
 //Randomly creates a piece
 Piece randPiece(){
-  int rand = 0;//(int)(Math.random()*7);
+  int rand = (int)(Math.random() * 7);//selection[0];
+  //removeselection(selection[0]);
   Piece next;
   if(rand == 0){
     next = createSquare();
