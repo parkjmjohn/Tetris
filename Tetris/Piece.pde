@@ -1,8 +1,11 @@
 public class Piece implements Displayable{
+   public String type;
    public Point[] blocks;
    private int[] origin;
    public int leftReach,rightReach,bottomReach;
-   
+   public String getType(){
+     return type; 
+   }
    public int[] getOrigin(){
      return origin; 
    }
@@ -22,7 +25,8 @@ public class Piece implements Displayable{
      origin[0] = x;
      origin[1] = y;
    }  
-   public Piece(Point[] points,int x, int y){
+   public Piece(Point[] points,int x, int y,String t){
+     type = t;
      origin = new int[2];
      origin[0] = x;
      origin[1] = y;

@@ -8,7 +8,7 @@ AudioPlayer bgroundmusic, clearline, gameover, rotate, score, select, howtoplay,
 PImage bground, bgroundplay;
 Point[] N;
 Point b,c,d,e;
-Piece L, W;
+Piece L, Next, Next2, Next3;
 Board B1;
 int screen, scorecounter, lineclear, howmany, level, show, atatime;
 
@@ -46,7 +46,10 @@ public void setup(){
   creds = minimcreds.loadFile("creds.mp3");
   font = loadFont("GillSansMT-Italic-48.vlw");
   textFont(font,48);
-  L = randPiece();
+  L = randPiece(375,50);
+  Next = randPiece(500,50);
+  Next2 = randPiece(500,120);
+  Next3 = randPiece(500,190);
   B1 = new Board(300,360,10,30);
   //Menu Stuff
   bground = loadImage("bground.jpg");
@@ -111,7 +114,7 @@ void draw(){
    if(mouseX>347 && mouseX<401 && mouseY>129 && mouseY<156) {
      setup();
    }
-  }
+ }
   if(screen == 0){
     menu();
   }
@@ -128,14 +131,14 @@ void draw(){
     show = level + 1;
     play();
     fill(200);
-    text(scorecounter, 10, 50);
-    text(level+1, 10, 100); 
-    if(level<=10){
+    //text(scorecounter, 10, 50);
+    //text(level+1, 10, 100); 
+    /*if(level<=10){
       int rate = 50 + level * 5;
       frameRate(rate);
     }else{
       frameRate(110); 
-    }
+    }*/
     text("SCORE", 10, 50);
     text(scorecounter, 10, 100);
     text("LEVEL", 10, 175);
@@ -146,14 +149,38 @@ void draw(){
 void menu(){
  image(bground, 0, 0);  
 }
+void updatePiece(){
+  L = createPiece(375,50,Next.getType());
+  Next = createPiece(500,50,Next2.getType());
+  Next2 = createPiece(500,120,Next3.getType());
+  Next3 = randPiece(500,190);
+  if(L.getType().equals("square")){
+    squared = true; 
+  }else{
+    squared = false; 
+  }
+  
+}
 
 void play(){
   //insert text
+  if(level <= 10){
+    int rate = 50 + level * 5;
+    frameRate(rate);
+    print(rate);
+  }else{
+    frameRate(110);
+  }
   screen = 1;
   background(0);
   image(bgroundplay, 0, 0);
   B1.display();
   L.display();
+  fill(255);
+  rect(490,5,65,200);
+  Next.display();
+  Next2.display();
+  Next3.display();
   if(key != 'p'){
     L.gravitize();
     if(show%3==0){
@@ -178,12 +205,12 @@ void play(){
   if(L.bottomReach+10>=B1.getOrigin()[1]){
     B1.add(L);
     checkRows();
-    L = randPiece();
+    updatePiece();
   }
   if(collision()){
     B1.add(L);
     checkRows();
-    L = randPiece();
+    updatePiece();
   }
 }
 
@@ -233,7 +260,9 @@ boolean fullRow(int r){
 }
 
 void keyPressed(){
-  if(key == 'w' && screen == 1){
+  if(screen == 4){
+    screen = 1; 
+  }else if(key == 'w' && screen == 1){
     if (!squared){
       L.rotateRight();
       rotate.play();
@@ -253,9 +282,13 @@ void keyPressed(){
     
 */
   }else if(key == 'a' && screen == 1){
-    L.moveLeft(); 
+   if(!collisionLeft()){
+      L.moveLeft(); 
+    }
   }else if(key == 'd' && screen == 1){
-    L.moveRight(); 
+    if(!collisionRight()){
+      L.moveRight(); 
+    }
   }else if(key == 's' && screen == 1){
     drop(); 
     drop.play();
@@ -366,7 +399,7 @@ void drop(){
     //Remove full rows
   checkRows();
   //Initialize new piece
-  L = randPiece();
+  updatePiece();
 }
 
 
@@ -388,39 +421,66 @@ boolean hitBottom(){
 //void removeselection(int value){
 //  if 
 //}
-
+//Creates piece of type T
+Piece createPiece(int x, int y, String type){
+  Piece next;
+  if(type == "square"){
+    next = createSquare(x,y);
+    //squared = true;
+  }else if(type == "L"){
+    next = createL(x,y);
+    //squared = false;
+  }else if(type == "T"){
+    next = createT(x,y);
+    //squared = false;
+  }else if(type == "Z"){
+    next = createZ(x,y);
+    //squared = false;
+  }else if(type == "backwardsL"){
+    next = createbackwardsL(x,y);
+    //squared = false;
+  }else if(type == "backwardsZ"){
+    next = createbackwardZ(x,y);
+     //squared = false;
+  }else{
+    next = createline(x,y);
+    //squared = false;
+  }
+  return next;
+}
 //Randomly creates a piece
-Piece randPiece(){
+Piece randPiece(int x, int y){
   int rand = (int)(Math.random() * 7);//selection[0];
   //removeselection(selection[0]);
   Piece next;
   if(rand == 0){
-    next = createSquare();
-    squared = true;
+    next = createSquare(x,y);
+    //squared = true;
   }else if(rand == 1){
-    next = createL();
+    next = createL(x,y);
     squared = false;
   }else if(rand == 2){
-    next = createT();
-    squared = false;
+    next = createT(x,y);
+    //squared = false;
   }else if(rand == 3){
-    next = createZ();
-    squared = false;
+    next = createZ(x,y);
+    //squared = false;
   }else if(rand == 4){
-    next = createbackwardsL();
-    squared = false;
+    next = createbackwardsL(x,y);
+    //squared = false;
   }else if(rand == 5){
-    next = createbackwardZ();
-     squared = false;
+    next = createbackwardZ(x,y);
+     //squared = false;
   }else{
-    next = createline();
-    squared = false;
+    next = createline(x,y);
+    //squared = false;
   }
   return next;
 }
 
+
 //Creates a square piece
-Piece createSquare(){
+Piece createSquare(int x, int y){
   //initiate color
   int Color = color(250,250,1);
   Point[] blocks = new Point[4];
@@ -432,11 +492,11 @@ Piece createSquare(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks,375,50);
+  Piece N = new Piece(blocks,x,y,"square");
   return N;
 }
 
-Piece createL(){
+Piece createL(int x, int y){
   int Color = color(51,112,240);
   Point[] blocks = new Point[4];
   Point P1 = new Point(0,0,Color);
@@ -447,11 +507,11 @@ Piece createL(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks, 375, 50);
+  Piece N = new Piece(blocks, x, y,"L");
   return N;
 }
 
-Piece createbackwardsL(){
+Piece createbackwardsL(int x, int y){
   int Color = color(1,250,1);
   Point[] blocks = new Point[4];
   Point P1 = new Point(0,0,Color);
@@ -462,11 +522,11 @@ Piece createbackwardsL(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks, 375, 50);
+  Piece N = new Piece(blocks, x, y,"backwardsL");
   return N;
 }
 
-Piece createZ(){
+Piece createZ(int x, int y){
   int Color = color(250,1,200);
   Point[] blocks = new Point[4];
   Point P1 = new Point(0,2,Color);
@@ -477,11 +537,11 @@ Piece createZ(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks, 375, 50);
+  Piece N = new Piece(blocks, x, y,"Z");
   return N;
 }
 
-Piece createbackwardZ(){
+Piece createbackwardZ(int x, int y){
   int Color = color(100,250,213);
   Point[] blocks = new Point[4];
   Point P1 = new Point(0,0,Color);
@@ -492,11 +552,11 @@ Piece createbackwardZ(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks, 375, 50);
+  Piece N = new Piece(blocks, x, y,"backwardsZ");
   return N;
 }
 
-Piece createline(){
+Piece createline(int x, int y){
   int Color = color(184,62,203);
   Point[] blocks = new Point[4];
   Point P1 = new Point(0,0,Color);
@@ -507,11 +567,11 @@ Piece createline(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks, 375, 50);
+  Piece N = new Piece(blocks, x, y,"line");
   return N;
 }
 
-Piece createT(){
+Piece createT(int x, int y){
   int Color = color(250,1,1);
   Point[] blocks = new Point[4];
   Point P1 = new Point(0,0,Color);
@@ -522,6 +582,6 @@ Piece createT(){
   blocks[1] = P2;
   blocks[2] = P3;
   blocks[3] = P4;
-  Piece N = new Piece(blocks, 375, 50);
+  Piece N = new Piece(blocks, x, y,"T");
   return N;
 }
