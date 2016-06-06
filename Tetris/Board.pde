@@ -1,32 +1,4 @@
-public void setup(){
-  size(878, 493);
-  screen = 0;
-  scorecounter = 0;
-  lineclear = 0;
-  howmany = 0;
-  level = 0;
-  minimclearline = new Minim(this);
-  minimgameover = new Minim(this);
-  minimrotate = new Minim(this);
-  minimscore = new Minim(this);
-  minimselect = new Minim(this);
-  minimhowtoplay = new Minim(this);
-  minimcreds = new Minim(this);
-  minimdrop = new Minim(this);
-  drop = minimdrop.loadFile("drop.mp3");
-  clearline = minimclearline.loadFile("clearline.mp3");
-  gameover = minimgameover.loadFile("gameover.mp3");
-  rotate = minimrotate.loadFile("rotate.mp3");
-  score = minimscore.loadFile("score.mp3");
-  select = minimselect.loadFile("select.mp3");
-  howtoplay = minimhowtoplay.loadFile("howtoplay.mp3");
-  creds = minimcreds.loadFile("creds.mp3");
-  font = loadFont("GillSansMT-Italic-48.vlw");
-  textFont(font,48);
-  frameRate(50);
-  L = randPiece();
-  B1 = new Board(300,360,10,30);
-}
+
 
 public class Board implements Displayable{
   private int[] origin;
