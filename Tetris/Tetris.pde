@@ -92,6 +92,7 @@ void draw(){
       text("GitHub: https://github.com/parkjmjohn/Tetris", 10, 210);
       text("APCS-2 Konstantinovich", 10, 290);
       text("Thankful for the music and pictures online", 10, 370);
+      text("John Park & Michael Feinberg", 10, 450);
       text("BACK", 700, 460);
       bgroundmusic.pause();
       creds.play();
@@ -106,13 +107,23 @@ void draw(){
       setup();
     }
   }
-  //if(mousePressed && screen==4){
-  //  if(mouseX>347 && mouseX<401 && mouseY>129 && mouseY<156) {
-  //    setup();
-  //  }
-  //}
+  if(mousePressed && screen==4){
+   if(mouseX>347 && mouseX<401 && mouseY>129 && mouseY<156) {
+     setup();
+   }
+  }
   if(screen == 0){
     menu();
+  }
+  if(screen==4){
+    textSize(26); 
+    fill(#12A063);
+    text("PAUSED", 334, 100);
+    text("QUIT", 348, 150);
+    bgroundmusic.pause();
+    creds.pause();
+    howtoplay.pause();
+    textSize(48); 
   }else if(screen == 1){
     show = level + 1;
     play();
@@ -145,7 +156,7 @@ void play(){
     if(show%3==1){
       bgroundmusic.pause();
       creds.play();
-      creds.loop();
+      //creds.loop();
     }
     if(show%3==2){
       creds.pause();
@@ -154,15 +165,7 @@ void play(){
     }
   }
   else if (key=='p'){
-    textSize(26); 
-    fill(#12A063);
-    text("PAUSED", 334, 100);
-    //text("QUIT", 348, 150);
-    //screen = 4;
-    bgroundmusic.pause();
-    creds.pause();
-    howtoplay.pause();
-    textSize(48); 
+    screen = 4;
   }
   if(L.bottomReach+10>=B1.getOrigin()[1]){
     B1.add(L);
