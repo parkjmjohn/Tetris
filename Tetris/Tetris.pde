@@ -5,15 +5,18 @@ Minim minimbgroundmusic, minimclearline, minimgameover, minimrotate, minimscore,
 AudioPlayer bgroundmusic, clearline, gameover, rotate, score, select, howtoplay, creds, drop;
 
 //PIMAGES
-PImage bground;
+PImage bground, bgroundplay;
 Point[] N;
 Point b,c,d,e;
 Piece L, W;
 Board B1;
-int screen, scorecounter, lineclear, howmany, level;
+int screen, scorecounter, lineclear, howmany, level, show, atatime;
 
-//Font
+boolean squared;
 PFont font;
+int[] selection;
+
+//Selection sel = new Selection();
 
 public void setup(){
   size(878, 493);
@@ -22,6 +25,9 @@ public void setup(){
   lineclear = 0;
   howmany = 0;
   level = 0;
+  selection = new int[7];
+  //refreshselection();
+  boolean squared = false;
   minimclearline = new Minim(this);
   minimgameover = new Minim(this);
   minimrotate = new Minim(this);
@@ -40,14 +46,86 @@ public void setup(){
   creds = minimcreds.loadFile("creds.mp3");
   font = loadFont("GillSansMT-Italic-48.vlw");
   textFont(font,48);
-  frameRate(50);
   L = randPiece();
   B1 = new Board(300,360,10,30);
+  //Menu Stuff
+  bground = loadImage("bground.jpg");
+  bgroundplay = loadImage("bgroundplay.jpg");
+  minimbgroundmusic = new Minim(this);
+  bgroundmusic = minimbgroundmusic.loadFile("bgroundmusic.mp3");
+  bgroundmusic.play();
+  bgroundmusic.loop(3);
 }
+
 void draw(){
+   if(mousePressed && screen==0){
+    if(mouseX>387 && mouseX<483 && mouseY>278 && mouseY<338) {
+      screen=1;
+    }
+  }
+  if(mousePressed && screen==0){
+    if(mouseX>256 && mouseX<361 && mouseY>353 && mouseY<447) {
+      screen=2;
+      image(bgroundplay, 0, 0);
+      bgroundmusic.pause();
+      howtoplay.play();
+      howtoplay.loop();
+      fill(200);
+      textSize(72);
+      text("W    =    ROTATE", 10, 80);
+      text("S    =    DROP", 10, 160);
+      text("A    =    LEFT", 10, 240);
+      text("D    =    RIGHT", 10, 320);
+      text("P    =    PAUSE", 10, 400);
+      text("ANY KEY   =    UNPAUSE", 10, 480);
+      text("BACK", 700, 460);
+    }
+  }
+  if(mousePressed && screen==0){
+    if(mouseX>517 && mouseX<625 && mouseY>353 && mouseY<447) {
+      screen=3;
+      image(bgroundplay, 0, 0);
+      fill(200);
+      textSize(48); 
+      text("Project Name: Tetris Friends", 10, 50);
+      text("Team Name: Steph & Klay", 10, 130);
+      text("GitHub: https://github.com/parkjmjohn/Tetris", 10, 210);
+      text("APCS-2 Konstantinovich", 10, 290);
+      text("Thankful for the music and pictures online", 10, 370);
+      text("John Park & Michael Feinberg", 10, 450);
+      text("BACK", 700, 460);
+      bgroundmusic.pause();
+      creds.play();
+      creds.loop();
+    }
+  }
+  if(mousePressed && (screen==3 || screen == 2)){
+    if(mouseX>700 && mouseX<800 && mouseY>425 && mouseY<460) {
+      screen = 0;
+      howtoplay.pause();
+      creds.pause();
+      setup();
+    }
+  }
+  if(mousePressed && screen==4){
+   if(mouseX>347 && mouseX<401 && mouseY>129 && mouseY<156) {
+     setup();
+   }
+  }
   if(screen == 0){
     menu();
+  }
+  if(screen==4){
+    textSize(26); 
+    fill(#12A063);
+    text("PAUSED", 334, 100);
+    text("QUIT", 348, 150);
+    bgroundmusic.pause();
+    creds.pause();
+    howtoplay.pause();
+    textSize(48); 
   }else if(screen == 1){
+    show = level + 1;
     play();
     fill(200);
     text(scorecounter, 10, 50);
@@ -58,24 +136,45 @@ void draw(){
     }else{
       frameRate(110); 
     }
+    text("SCORE", 10, 50);
+    text(scorecounter, 10, 100);
+    text("LEVEL", 10, 175);
+    text(show, 10, 225);  
   }
 }
 
 void menu(){
-  bground = loadImage("bground.jpg");
-  minimbgroundmusic = new Minim(this);
-  //bgroundmusic = minimbgroundmusic.loadFile("bgroundmusic.mp3");
-  image(bground, 0, 0);  
-  //bgroundmusic.play();
-  //bgroundmusic.loop();
+ image(bground, 0, 0);  
 }
 
 void play(){
   //insert text
+  screen = 1;
   background(0);
+  image(bgroundplay, 0, 0);
   B1.display();
   L.display();
-  L.gravitize();
+  if(key != 'p'){
+    L.gravitize();
+    if(show%3==0){
+      howtoplay.pause();
+      bgroundmusic.play();
+      //bgroundmusic.loop();
+    }
+    if(show%3==1){
+      bgroundmusic.pause();
+      creds.play();
+      //creds.loop();
+    }
+    if(show%3==2){
+      creds.pause();
+      howtoplay.play();
+      //howtoplay.loop();
+    }
+  }
+  else if (key=='p'){
+    screen = 4;
+  }
   if(L.bottomReach+10>=B1.getOrigin()[1]){
     B1.add(L);
     checkRows();
@@ -87,16 +186,20 @@ void play(){
     L = randPiece();
   }
 }
+
+void degratify(){
+  
+}
+
 void checkRows(){
   for(int r = 0;r<B1.blocks.length;r++){
-    
     while(fullRow(r)){
       //print(r);
       removeRow(r);
     } 
   }
-  
 }
+
 void removeRow(int r){
   for(int row = r;row<B1.blocks.length-1;row++){
     for(int col = 0;col<B1.blocks[r].length;col++){
@@ -105,16 +208,19 @@ void removeRow(int r){
         int y = B1.blocks[row+1][col].getY();
         int Color = B1.blocks[row+1][col].getColor();
         B1.blocks[row][col] = new Point(x,y-1,Color);
+        atatime+=1;
       }else{
         B1.blocks[row][col] = null; 
       }
     }
+    atatime=(atatime+1)/10;
   }
   clearline.play();
   clearline.rewind();
   lineclear+=1;
   refreshscore();
 }
+
 boolean fullRow(int r){
   print(B1.blocks.length + " " + B1.blocks[0].length);
   for(int c = 0;c<B1.blocks[0].length;c++){
@@ -125,15 +231,17 @@ boolean fullRow(int r){
   }
   return true;
 }
+
 void keyPressed(){
-  screen = 1;
-  if(key == 'w'){
-    L.rotateRight();
-    rotate.play();
-    rotate.rewind();
+  if(key == 'w' && screen == 1){
+    if (!squared){
+      L.rotateRight();
+      rotate.play();
+      rotate.rewind();
+    }
   //}else if(key == 'f'){
   //  L.rotateRight();
-  }else if(key == 'a'){
+  /*}else if(key == 'a'){
     if(!collisionLeft()){
       L.moveLeft(); 
     }
@@ -142,6 +250,13 @@ void keyPressed(){
       L.moveRight(); 
     }
   }else if(key == 's'){
+    
+*/
+  }else if(key == 'a' && screen == 1){
+    L.moveLeft(); 
+  }else if(key == 'd' && screen == 1){
+    L.moveRight(); 
+  }else if(key == 's' && screen == 1){
     drop(); 
     drop.play();
     drop.rewind();
@@ -222,8 +337,24 @@ void keepInBounds(Piece piece){
 
 //score
 void refreshscore(){
+ System.out.println("JOHNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN" + atatime);
+ if (atatime>=2){
+   if (atatime==2){
+      scorecounter+=100;
+   }
+   else if (atatime==3){
+      scorecounter+=150;
+   }
+   else{
+      scorecounter+=200;
+   }
+   atatime=0;
+ }
+ if (level>0) {
+   scorecounter+=level*100;
+ }
  scorecounter=100*lineclear;
- level += lineclear/10;
+ level = lineclear/10;
 }
 
 void drop(){
@@ -232,36 +363,58 @@ void drop(){
     L.gravitize();
   }
   B1.add(L);
-  
-  //Remove full rows
+    //Remove full rows
   checkRows();
-  
   //Initialize new piece
   L = randPiece();
 }
+
+
 boolean hitBottom(){
   //Check if piece hits bottom of board
   return L.bottomReach+14>=B1.getOrigin()[1];
 }
 
+//void refreshselection(){
+//    Integer[] arr = new Integer[7];
+//    for (int i = 0; i < arr.length; i++) {
+//        arr[i] = i;
+//    }
+//    Collections.shuffle(Arrays.asList(arr));
+//    System.out.println(Arrays.toString(arr));
+  
+//}
+
+//void removeselection(int value){
+//  if 
+//}
+
 //Randomly creates a piece
 Piece randPiece(){
-  int rand = (int)(Math.random()*7);
+  int rand = (int)(Math.random() * 7);//selection[0];
+  //removeselection(selection[0]);
   Piece next;
   if(rand == 0){
     next = createSquare();
+    squared = true;
   }else if(rand == 1){
     next = createL();
+    squared = false;
   }else if(rand == 2){
     next = createT();
+    squared = false;
   }else if(rand == 3){
     next = createZ();
+    squared = false;
   }else if(rand == 4){
     next = createbackwardsL();
+    squared = false;
   }else if(rand == 5){
     next = createbackwardZ();
+     squared = false;
   }else{
     next = createline();
+    squared = false;
   }
   return next;
 }
@@ -282,6 +435,7 @@ Piece createSquare(){
   Piece N = new Piece(blocks,375,50);
   return N;
 }
+
 Piece createL(){
   int Color = color(51,112,240);
   Point[] blocks = new Point[4];
