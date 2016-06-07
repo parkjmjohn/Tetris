@@ -3,8 +3,8 @@ import ddf.minim.*;
 import java.io.*;
 
 //MUSIC
-Minim minimhigh, minimbgroundmusic, minimclearline, minimgameover, minimrotate, minimscore, minimselect, minimhowtoplay, minimcreds, minimdrop;
-AudioPlayer high, bgroundmusic, clearline, gameover, rotate, score, select, howtoplay, creds, drop;
+Minim minimone, minimtwo, minimthree, minimhigh, minimbgroundmusic, minimclearline, minimgameover, minimrotate, minimscore, minimselect, minimhowtoplay, minimcreds, minimdrop;
+AudioPlayer one, two, three, high, bgroundmusic, clearline, gameover, rotate, score, select, howtoplay, creds, drop;
 
 //PIMAGES
 PImage bground, bgroundplay;
@@ -50,6 +50,12 @@ public void setup(){
   minimcreds = new Minim(this);
   minimdrop = new Minim(this);
   minimhigh = new Minim(this);
+ minimone = new Minim(this);
+  minimtwo = new Minim(this);
+  minimthree = new Minim(this);
+  one = minimhigh.loadFile("one.mp3");
+  two = minimdrop.loadFile("two.mp3");
+  three = minimclearline.loadFile("three.mp3");
   high = minimhigh.loadFile("high.mp3");
   drop = minimdrop.loadFile("drop.mp3");
   clearline = minimclearline.loadFile("clearline.mp3");
@@ -315,19 +321,19 @@ void play(){
       L.gravitize();
     }*/
     L.gravitize();
-    if(show%3==0){
-      howtoplay.pause();
-      bgroundmusic.play();
+   if(show%3==0){
+      two.pause();
+      three.play();
       //bgroundmusic.loop();
     }
     if(show%3==1){
-      bgroundmusic.pause();
-      creds.play();
+      three.pause();
+      one.play();
       //creds.loop();
     }
     if(show%3==2){
-      creds.pause();
-      howtoplay.play();
+      one.pause();
+      two.play();
       //howtoplay.loop();
     }
   }
