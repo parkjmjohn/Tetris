@@ -239,6 +239,7 @@ void draw(){
     }else{
       frameRate(110); 
     }
+    textSize(48);
     text("SCORE", 10, 50);
     text(scorecounter, 10, 100);
     text("LEVEL", 10, 175);
