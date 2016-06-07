@@ -60,7 +60,7 @@ public void setup(){
   howtoplay = minimhowtoplay.loadFile("howtoplay.mp3");
   creds = minimcreds.loadFile("creds.mp3");
   textFont(font,48);
-  L = randPiece(375,50);
+  L = randPiece(375,45);
   Next = randPiece(500,50);
   Next2 = randPiece(500,120);
   Next3 = randPiece(500,190);
@@ -108,7 +108,8 @@ public void clear() {
   
 
 void draw(){
-   if(mousePressed && screen==0){
+  
+  if(mousePressed && screen==0){
     if(mouseX>387 && mouseX<483 && mouseY>278 && mouseY<338) {
       screen=1;
     }
@@ -183,7 +184,7 @@ void draw(){
       menu();
     }
   }
-  if(mousePressed && screen==4){
+  if(mousePressed && (screen == 4||screen == 7)){
    if(mouseX>347 && mouseX<401 && mouseY>129 && mouseY<156) {
      saveScores();
      setup();
@@ -203,11 +204,16 @@ void draw(){
     creds.pause();
     howtoplay.pause();
     textSize(48); 
+  }else if(screen == 7){
+    textSize(26); 
+    fill(#12A063);
+    text("GAME OVER", 334, 100);
+    text("QUIT", 348, 150);
+    bgroundmusic.pause();
+    creds.pause();
+    howtoplay.pause();
+    textSize(48);
   }else if(screen == 1){
-    
-    //GAME OVER STUFF
-    //String[] list = split(textValue, ' ');
-    //saveStrings("data.txt", list);
     
     
     show = level + 1;
@@ -237,7 +243,11 @@ void menu(){
 }
 
 void updatePiece(){
-  L = createPiece(375,50,Next.getType());
+  if(Next.getType().equals("line")){
+    L = createPiece(375,60,Next.getType());
+  }else{
+    L = createPiece(375,46,Next.getType());
+  }
   Next = createPiece(500,50,Next2.getType());
   Next2 = createPiece(500,120,Next3.getType());
   Next3 = randPiece(500,190);
@@ -325,11 +335,28 @@ void play(){
   }
   if(collision()){
     B1.add(L);
+    if(checkGameStatus()){
+      endGame(); 
+    }
     checkRows();
     updatePiece();
   }
+  fill(0);
+  rect(300,0,150,60);
 }
-
+boolean checkGameStatus(){
+  for(int i = 20;i<B1.blocks.length;i++){
+    for(int j = 0; j<B1.blocks[0].length;j++){
+      if(B1.blocks[i][j] != null){
+         return true;
+      }
+    }
+  }
+  return false;
+}
+void endGame(){
+  screen = 7;
+}
 void checkRows(){
   for(int r = 0;r<B1.blocks.length;r++){
     while(fullRow(r)){
@@ -508,6 +535,9 @@ void drop(){
     L.gravitize();
   }
   B1.add(L);
+  if(checkGameStatus()){
+    endGame(); 
+  }
     //Remove full rows
   checkRows();
   //Initialize new piece
