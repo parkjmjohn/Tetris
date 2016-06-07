@@ -154,14 +154,6 @@ void draw(){
   if(mousePressed && screen==0){
     if(mouseX>381 && mouseX<500 && mouseY>346 && mouseY<453) {
       screen=6;
-      image(bgroundplay, 0, 0);
-      text("HIGHSCORES", 10, 50);
-      fill(200);
-      textSize(48); 
-      text("BACK", 700, 460);
-      bgroundmusic.pause(); 
-      high.play();
-      high.loop();
     }
   }
   if(mousePressed && (screen==3 || screen == 2 || screen == 6)){
@@ -192,6 +184,7 @@ void draw(){
      screen = 1; 
    }
  }
+ 
   if(screen == 0){
     menu();
   }
@@ -213,9 +206,22 @@ void draw(){
     creds.pause();
     howtoplay.pause();
     textSize(48);
+  }else if(screen == 6){
+    image(bgroundplay, 0, 0);
+    textSize(48); 
+    text("HIGHSCORES", 10, 50);
+    fill(200);
+     textSize(48); 
+     text("BACK", 700, 460);
+     bgroundmusic.pause(); 
+     high.play();
+     high.loop();
+     textSize(24);
+     for(int i = 0; i < highScoreData.size();i++){
+       String line = "" + (i+1) + ".)" + highScoreData.get(i);
+       text(line,350,100+25*i);
+     }
   }else if(screen == 1){
-    
-    
     show = level + 1;
     play();
     fill(200);
@@ -360,7 +366,7 @@ void endGame(){
 void checkRows(){
   for(int r = 0;r<B1.blocks.length;r++){
     while(fullRow(r)){
-      //print(r);
+      
       removeRow(r);
     } 
   }
@@ -388,9 +394,7 @@ void removeRow(int r){
 }
 
 boolean fullRow(int r){
-  print(B1.blocks.length + " " + B1.blocks[0].length);
   for(int c = 0;c<B1.blocks[0].length;c++){
-    //print(r + " " + c + " ");
      if(B1.blocks[r][c]==null){
        return false; 
      }
@@ -403,23 +407,12 @@ void keyPressed(){
     screen = 1; 
   }else if(key == 'w' && screen == 1){
     if (!squared){
-      L.rotateRight();
-      rotate.play();
-      rotate.rewind();
+      if(!collisionRotate()){
+        L.rotateRight();
+        rotate.play();
+        rotate.rewind();
+      }
     }
-  //}else if(key == 'f'){
-  //  L.rotateRight();
-  /*}else if(key == 'a'){
-    if(!collisionLeft()){
-      L.moveLeft(); 
-    }
-  }else if(key == 'd'){
-    if(!collisionRight()){
-      L.moveRight(); 
-    }
-  }else if(key == 's'){
-    
-*/
   }else if(key == 'a' && screen == 1){
    if(!collisionLeft()){
       L.moveLeft(); 
@@ -495,7 +488,26 @@ boolean collisionRight(){
   }
   return false;
 }
-
+boolean collisionRotate(){
+  int xpos = L.getOrigin()[0];
+  int ypos = L.getOrigin()[1];
+  for(Point block : L.blocks){
+       int currentX = block.getX();
+       int currentY = block.getY();
+       int y = -1 * currentX;
+       int x  = currentY;
+       x = x*15 + xpos;
+       x = Math.abs(x-B1.origin[0])/15;
+       y = ypos - y*15;
+       y = Math.abs(y-B1.origin[1])/15;
+       if(x<10&&y<24&&x>=0&&y>=0){
+         if(B1.blocks[y][x]!=null){
+            return true;
+         }
+       }
+   }
+  return false;
+}
 void keepInBounds(Piece piece){
   int leftBound = (int)(B1.getOrigin()[0]);
   int rightBound = (int)(leftBound + 150);

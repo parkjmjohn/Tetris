@@ -1,5 +1,3 @@
-
-
 public class Board implements Displayable{
   private int[] origin;
   private int Width;
