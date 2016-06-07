@@ -7,16 +7,15 @@ Team Name: Steph&Klay
 
 Project Name: Tetris Friends
 
-Description: The eminent Tetris game. Play at extreme levels (if your mind has the celerity) or play a zooming speed (if your hands can handle the cramps). Compete against your friend, in 1v1 Tetris, to see who gets to hook up with that chick.
+Description: The eminent Tetris game. Play at extreme levels (if your mind has the celerity) or play a zooming speed (if your hands can handle the cramps). See if you can make top 15 in the scoreboard list.
 
 
 
 Project Outline: 
-Michael: Fix rotate, hold
+Michael:Board, Fix rotate, hold, gameover, drop, rotate, pieces, hold pieces, shifting left and right, level speed
 
-John: Pause, Save high score
+John:Homepage, directories, user input, rotation fix, pause, Save high score, levels, music, sound effects, pieces
 
-Left: Gameover and levels
 
 
 
@@ -49,9 +48,9 @@ Development Log (Dates/Description)
 
 06/2 - Make buttons - John
 
-06/03 - 0607
+06/03 - 06/07
 John:
-Made interactive screens that were navigable, added highscore screen, user text input, restriction on square rotation.
-
+Made interactive screens that were navigable, added highscore screen, user text input, restriction on square rotation, added pause, more sound effects, more screens
+ 
 Michael:
 Restricted rotation depending on space around piece, added an end game, made highscores be saved to file as well as display on highscore screen, attempted to increment game speed at higher levels (not necessarily successful), added piece types, added display of next pieces.
