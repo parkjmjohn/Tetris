@@ -1,8 +1,9 @@
+import controlP5.*;
 import ddf.minim.*;
 
 //MUSIC
-Minim minimbgroundmusic, minimclearline, minimgameover, minimrotate, minimscore, minimselect, minimhowtoplay, minimcreds, minimdrop;
-AudioPlayer bgroundmusic, clearline, gameover, rotate, score, select, howtoplay, creds, drop;
+Minim minimhigh, minimbgroundmusic, minimclearline, minimgameover, minimrotate, minimscore, minimselect, minimhowtoplay, minimcreds, minimdrop;
+AudioPlayer high, bgroundmusic, clearline, gameover, rotate, score, select, howtoplay, creds, drop;
 
 //PIMAGES
 PImage bground, bgroundplay;
@@ -12,21 +13,25 @@ Piece L, Next, Next2, Next3;
 Board B1;
 int screen, scorecounter, lineclear, howmany, level, show, atatime;
 
-boolean squared;
+boolean squared, shower;
 PFont font;
-int[] selection;
 
-//Selection sel = new Selection();
+ControlP5 cp5;
+String textValue = "";
+
 
 public void setup(){
   size(878, 493);
-  screen = 0;
+  String[] textValue = loadStrings("data.txt");
+  screen = -1;
+  shower = true;
+  font = loadFont("GillSansMT-Italic-48.vlw");
+  cp5 = new ControlP5(this);
+  shower();
   scorecounter = 0;
   lineclear = 0;
   howmany = 0;
   level = 0;
-  selection = new int[7];
-  //refreshselection();
   boolean squared = false;
   minimclearline = new Minim(this);
   minimgameover = new Minim(this);
@@ -36,6 +41,8 @@ public void setup(){
   minimhowtoplay = new Minim(this);
   minimcreds = new Minim(this);
   minimdrop = new Minim(this);
+  minimhigh = new Minim(this);
+  high = minimhigh.loadFile("high.mp3");
   drop = minimdrop.loadFile("drop.mp3");
   clearline = minimclearline.loadFile("clearline.mp3");
   gameover = minimgameover.loadFile("gameover.mp3");
@@ -44,7 +51,6 @@ public void setup(){
   select = minimselect.loadFile("select.mp3");
   howtoplay = minimhowtoplay.loadFile("howtoplay.mp3");
   creds = minimcreds.loadFile("creds.mp3");
-  font = loadFont("GillSansMT-Italic-48.vlw");
   textFont(font,48);
   L = randPiece(375,50);
   Next = randPiece(500,50);
@@ -57,8 +63,39 @@ public void setup(){
   minimbgroundmusic = new Minim(this);
   bgroundmusic = minimbgroundmusic.loadFile("bgroundmusic.mp3");
   bgroundmusic.play();
-  bgroundmusic.loop(3);
+  bgroundmusic.loop();
+  image(bgroundplay, 0, 0);
+  fill(250);
+  text("NEXT", 700, 460);
 }
+
+void shower(){
+    cp5.addTextfield("USERNAME")
+   .setPosition(320,170)
+   .setSize(200,40)
+   .setFont(createFont("GillSansMT-Italic",36))
+   .setAutoClear(false)
+   .setVisible(shower);
+  if(shower){
+    cp5.addBang("clear")
+     .setPosition(540,170)
+     .setSize(80,40)
+     .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+     .setVisible(shower);
+  }
+  if(!shower){
+    cp5.addBang("clear")
+     .setPosition(40,170)
+     .setSize(80,40)
+     //.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+     .setVisible(shower);
+  }
+}
+
+public void clear() {
+  cp5.get(Textfield.class,"USERNAME").clear();
+}
+  
 
 void draw(){
    if(mousePressed && screen==0){
@@ -81,6 +118,7 @@ void draw(){
       text("D    =    RIGHT", 10, 320);
       text("P    =    PAUSE", 10, 400);
       text("ANY KEY   =    UNPAUSE", 10, 480);
+      textSize(48); 
       text("BACK", 700, 460);
     }
   }
@@ -97,17 +135,42 @@ void draw(){
       text("Thankful for the music and pictures online", 10, 370);
       text("John Park & Michael Feinberg", 10, 450);
       text("BACK", 700, 460);
-      bgroundmusic.pause();
+      bgroundmusic.pause(); 
       creds.play();
       creds.loop();
     }
   }
-  if(mousePressed && (screen==3 || screen == 2)){
+  if(mousePressed && screen==0){
+    if(mouseX>381 && mouseX<500 && mouseY>346 && mouseY<453) {
+      screen=6;
+      image(bgroundplay, 0, 0);
+      text("HIGHSCORES", 10, 50);
+      fill(200);
+      textSize(48); 
+      text("BACK", 700, 460);
+      bgroundmusic.pause(); 
+      high.play();
+      high.loop();
+    }
+  }
+  if(mousePressed && (screen==3 || screen == 2 || screen == 6)){
     if(mouseX>700 && mouseX<800 && mouseY>425 && mouseY<460) {
       screen = 0;
+      high.pause();
       howtoplay.pause();
       creds.pause();
-      setup();
+      menu();
+    }
+  }
+  if(mousePressed && (screen==-1)){
+    if(mouseX>700 && mouseX<800 && mouseY>425 && mouseY<460) {
+      screen = 0;
+      if(cp5.get(Textfield.class,"USERNAME").getText() == ""){
+        textValue += "ANONYMOUS";
+      }
+      textValue += cp5.get(Textfield.class,"USERNAME").getText();
+      menu();
+      System.out.println(textValue);
     }
   }
   if(mousePressed && screen==4){
@@ -128,6 +191,12 @@ void draw(){
     howtoplay.pause();
     textSize(48); 
   }else if(screen == 1){
+    
+    //GAME OVER STUFF
+    //String[] list = split(textValue, ' ');
+    //saveStrings("data.txt", list);
+    
+    
     show = level + 1;
     play();
     fill(200);
@@ -147,8 +216,13 @@ void draw(){
 }
 
 void menu(){
+ shower=false;
+ shower();
+ bgroundmusic.play();
+// bgroundmusic.loop();
  image(bground, 0, 0);  
 }
+
 void updatePiece(){
   L = createPiece(375,50,Next.getType());
   Next = createPiece(500,50,Next2.getType());
