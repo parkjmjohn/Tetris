@@ -50,7 +50,7 @@ Development Log (Dates/Description)
 
 06/03 - 06/07
 John:
-Made interactive screens that were navigable, added highscore screen, user text input, restriction on square rotation, added pause, more sound effects, more screens
+Made interactive screens that were navigable, added highscore screen, user text input, restriction on square rotation, added pause, more sound effects, more screens, 4AM debuggings
  
 Michael:
 Restricted rotation depending on space around piece, added an end game, made highscores be saved to file as well as display on highscore screen, attempted to increment game speed at higher levels (not necessarily successful), added piece types, added display of next pieces.
