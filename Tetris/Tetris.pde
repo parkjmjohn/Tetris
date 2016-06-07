@@ -1,5 +1,6 @@
 import controlP5.*;
 import ddf.minim.*;
+import java.io.*;
 
 //MUSIC
 Minim minimhigh, minimbgroundmusic, minimclearline, minimgameover, minimrotate, minimscore, minimselect, minimhowtoplay, minimcreds, minimdrop;
@@ -17,12 +18,19 @@ boolean squared, shower;
 PFont font;
 
 ControlP5 cp5;
-String textValue = "";
+PrintWriter writer;
+String UserData;
 
+ArrayList<String> highScoreData;
 
 public void setup(){
   size(878, 493);
-  String[] textValue = loadStrings("data.txt");
+  UserData = "";
+  highScoreData = new ArrayList<String>();
+  String[] lines = loadStrings("data.txt");
+  for(int i = 0;i<lines.length;i++){
+    highScoreData.add(lines[i]);
+  }
   screen = -1;
   shower = true;
   font = loadFont("GillSansMT-Italic-48.vlw");
@@ -91,6 +99,8 @@ void shower(){
      .setVisible(shower);
   }
 }
+
+
 
 public void clear() {
   cp5.get(Textfield.class,"USERNAME").clear();
@@ -166,16 +176,19 @@ void draw(){
     if(mouseX>700 && mouseX<800 && mouseY>425 && mouseY<460) {
       screen = 0;
       if(cp5.get(Textfield.class,"USERNAME").getText() == ""){
-        textValue += "ANONYMOUS";
+        UserData += "ANONYMOUS";
+      }else{
+        UserData += cp5.get(Textfield.class,"USERNAME").getText();
       }
-      textValue += cp5.get(Textfield.class,"USERNAME").getText();
       menu();
-      System.out.println(textValue);
     }
   }
   if(mousePressed && screen==4){
    if(mouseX>347 && mouseX<401 && mouseY>129 && mouseY<156) {
+     saveScores();
      setup();
+   }else{
+     screen = 1; 
    }
  }
   if(screen == 0){
@@ -203,7 +216,7 @@ void draw(){
     //text(scorecounter, 10, 50);
     //text(level+1, 10, 100); 
     if(level<=10){
-      int rate = 50 + level * 5;
+      int rate = 50 + level * 10;
       frameRate(rate);
     }else{
       frameRate(110); 
@@ -234,6 +247,31 @@ void updatePiece(){
     squared = false; 
   }
   
+}
+void saveScores(){
+  UserData += " " + scorecounter;
+  int count = 0;
+  while(count < highScoreData.size()){
+    String num = highScoreData.get(count).split(" ")[1];
+    int score = Integer.parseInt(num);
+    if(scorecounter > score){
+       highScoreData.add(count,UserData);
+       count = highScoreData.size()+1;
+    }else{
+       count++;
+    }
+  }
+  if(count == highScoreData.size()){
+    highScoreData.add(UserData);
+  }
+  writer = createWriter("data.txt");
+  for(int y = 0;y<highScoreData.size();y++){
+    if(y<15){
+      writer.println(highScoreData.get(y));
+    }
+  }
+  writer.flush();
+  writer.close();
 }
 
 void play(){
@@ -290,10 +328,6 @@ void play(){
     checkRows();
     updatePiece();
   }
-}
-
-void degratify(){
-  
 }
 
 void checkRows(){
@@ -448,7 +482,7 @@ void keepInBounds(Piece piece){
 
 //score
 void refreshscore(){
- System.out.println("JOHNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN" + atatime);
+ //System.out.println("JOHNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN" + atatime);
  if (atatime>=2){
    if (atatime==2){
       scorecounter+=100;
