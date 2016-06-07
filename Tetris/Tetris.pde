@@ -133,12 +133,12 @@ void draw(){
     fill(200);
     //text(scorecounter, 10, 50);
     //text(level+1, 10, 100); 
-    /*if(level<=10){
+    if(level<=10){
       int rate = 50 + level * 5;
       frameRate(rate);
     }else{
       frameRate(110); 
-    }*/
+    }
     text("SCORE", 10, 50);
     text(scorecounter, 10, 100);
     text("LEVEL", 10, 175);
@@ -164,13 +164,13 @@ void updatePiece(){
 
 void play(){
   //insert text
-  if(level <= 10){
-    int rate = 50 + level * 5;
+  /*if(level <= 10){
+    int rate = 60 + level * 10;
     frameRate(rate);
     print(rate);
   }else{
     frameRate(110);
-  }
+  }*/
   screen = 1;
   background(0);
   image(bgroundplay, 0, 0);
@@ -182,6 +182,10 @@ void play(){
   Next2.display();
   Next3.display();
   if(key != 'p'){
+    /*int m = millis();
+    if(m % 100 < 10){
+      L.gravitize();
+    }*/
     L.gravitize();
     if(show%3==0){
       howtoplay.pause();
